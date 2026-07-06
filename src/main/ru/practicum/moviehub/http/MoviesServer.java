@@ -14,8 +14,8 @@ public class MoviesServer {
     public MoviesServer(MoviesStore store, int port) {
         this.store = store;
         try {
-            server = HttpServer.create(new InetSocketAddress(port), 0);
-            server.createContext("/movies", new MoviesHandler(store));
+            this.server = HttpServer.create(new InetSocketAddress(port), 0);
+            this.server.createContext("/movies", new MoviesHandler(store));
 
         } catch (IOException e) {
             throw new RuntimeException("Не удалось создать HTTP-сервер", e);
