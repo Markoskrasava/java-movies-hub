@@ -3,47 +3,56 @@ package ru.practicum.moviehub.model;
 import java.util.Objects;
 
 public class Movie {
-    private String name;
+    private static int id;
+    private String title;
     private int year;
-    private String director;
 
 
-    public Movie(String name, int year, String director) {
-        this.name = name;
+    public Movie(int id, String title, int year) {
+        this.id = id;
+        this.title = title;
         this.year = year;
-        this.director = director;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return year == movie.year && Objects.equals(name, movie.name);
+    public Movie(String title, int year) {
+        this(0, title, year);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, year);
+    public static void setId(int id) {
+        Movie.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "name='" + name + '\'' +
-                ", year=" + year +
-                ", director='" + director + '\'' +
-                '}';
+
+    public int getId() {
+        return id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public int getYear() {
         return year;
     }
 
-    public String getDirector() {
-        return director;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id == movie.id && year == movie.year && Objects.equals(title, movie.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, year);
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", year=" + year +
+                '}';
     }
 }

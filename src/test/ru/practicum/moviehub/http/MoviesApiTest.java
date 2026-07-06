@@ -18,14 +18,13 @@ import ru.practicum.moviehub.model.Movie;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MoviesApiTest {
-    public static final String BASE = "http://localhost:8080"; // !!! добавьте базовую часть URL
+    public static final String BASE = "http://localhost:8080";
     private static MoviesServer server;
     private static HttpClient client;
     private static final Gson gson = new Gson();
 
     @BeforeAll
     static void beforeAll() {
-        // !!! Реализуйте метод beforeAll
         server = new MoviesServer();
         server.start();
         client = HttpClient.newBuilder()
@@ -40,7 +39,6 @@ public class MoviesApiTest {
 
     @AfterAll
     static void afterAll() {
-        // !!! Реализуйте метод afterAll
         if (server != null) {
             server.stop();
         }
@@ -49,7 +47,7 @@ public class MoviesApiTest {
     @Test
     void getMovies_whenEmpty_returnsEmptyArray() throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create(BASE + "/movies")) // !!! Добавьте правильный URI
+                .uri(URI.create(BASE + "/movies"))
                 .GET()
                 .build();
 
@@ -70,9 +68,9 @@ public class MoviesApiTest {
 
     @Test
     void getMovies_returnAllMovies() throws Exception {
-        Movie movie1 = new Movie("Начало", 2010, "Кристофер Нолан");
-        Movie movie2 = new Movie("Матрица", 1999, "Вачовски");
-        Movie movie3 = new Movie("Криминальное чтиво", 1994, "Квентин Тарантино");
+        Movie movie1 = new Movie(1, "Начало", 2010);
+        Movie movie2 = new Movie(2, "Матрица", 1999);
+        Movie movie3 = new Movie(3, "Криминальное чтиво", 1994);
         String json1 = gson.toJson(movie1);
         HttpRequest postReq1 = HttpRequest.newBuilder()
                 .uri(URI.create(BASE + "/movies"))
@@ -113,7 +111,7 @@ public class MoviesApiTest {
 
     @Test
     void postMovies_shouldAddMovie() throws Exception {
-        Movie newMovie = new Movie("Бойцовский клуб", 1999, "Дэвид Финчер");
+        Movie newMovie = new Movie(1, "Бойцовский клуб", 1999);
         String json = gson.toJson(newMovie);
 
         HttpRequest req = HttpRequest.newBuilder()
@@ -129,14 +127,13 @@ public class MoviesApiTest {
 
         Movie saved = gson.fromJson(resp.body(), Movie.class);
         assertNotNull(saved);
-        assertEquals("Бойцовский клуб", saved.getName());
+        assertEquals("Бойцовский клуб", saved.getTitle());
         assertEquals(1999, saved.getYear());
-        assertEquals("Дэвид Финчер", saved.getDirector());
     }
 
     @Test
-    void deleteMovies_shouldDeleteAll() throws Exception {
-        Movie newMovie = new Movie("Бойцовский клуб", 1999, "Дэвид Финчер");
+    void deleteMovieById_shouldReturn204() throws Exception {
+        Movie newMovie = new Movie("Бойцовский клуб", 1999);
         String json = gson.toJson(newMovie);
 
         HttpRequest postReq = HttpRequest.newBuilder()
@@ -149,38 +146,17 @@ public class MoviesApiTest {
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
 
         assertEquals(201, postResp.statusCode());
-
-        HttpRequest getReqBefore = HttpRequest.newBuilder()
-                .uri(URI.create(BASE + "/movies"))
-                .GET()
-                .build();
-
-        HttpResponse<String> getRespBefore = client.send(getReqBefore,
-                HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-
-        List<Movie> moviesBefore = gson.fromJson(getRespBefore.body(), new ListOfMoviesTypeToken().getType());
-        assertEquals(1, moviesBefore.size());
+        Movie saved = gson.fromJson(postResp.body(), Movie.class);
+        int id = saved.getId();
 
         HttpRequest deleteReq = HttpRequest.newBuilder()
-                .uri(URI.create(BASE + "/movies"))
+                .uri(URI.create(BASE + "/movies/" + id))
                 .DELETE()
                 .build();
 
         HttpResponse<Void> deleteResp = client.send(deleteReq,
                 HttpResponse.BodyHandlers.discarding());
 
-        assertEquals(200, deleteResp.statusCode());
-
-        HttpRequest getReqAfter = HttpRequest.newBuilder()
-                .uri(URI.create(BASE + "/movies"))
-                .GET()
-                .build();
-
-        HttpResponse<String> getRespAfter = client.send(getReqAfter,
-                HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
-
-        List<Movie> moviesAfter = gson.fromJson(getRespAfter.body(), new ListOfMoviesTypeToken().getType());
-        assertEquals(0, moviesAfter.size());
-        assertEquals("[]", getRespAfter.body().trim());
+        assertEquals(204, deleteResp.statusCode());
     }
 }

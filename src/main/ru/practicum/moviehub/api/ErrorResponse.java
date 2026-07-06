@@ -1,13 +1,16 @@
 package ru.practicum.moviehub.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ErrorResponse {
     private String error;
-    private final int statusCode;
+    private List<String> details;
 
 
-    public ErrorResponse(String error, int statusCode) {
+    public ErrorResponse(String error, List<String> details) {
         this.error = error;
-        this.statusCode = statusCode;
+        this.details = new ArrayList<>();
     }
 
 
@@ -15,7 +18,7 @@ public class ErrorResponse {
         return error;
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    public List<String> getDetails() {
+        return details;
     }
 }
