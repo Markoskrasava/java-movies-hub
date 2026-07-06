@@ -20,11 +20,13 @@ public class MoviesStore {
         return new ArrayList<>(movies);
     }
 
-    public void addMovie(Movie movie) {
+    public Movie addMovie(Movie movie) {
         System.out.println("Добавлен фильм: " + movie.getTitle() + ", год: " + movie.getYear());
-        Movie newMovie = new Movie(nextId, movie.getTitle(), movie.getYear());
+        Movie newMovie = new Movie(movie.getTitle(), movie.getYear());
+        newMovie.setId(nextId);
         movies.add(newMovie);
         nextId++;
+        return newMovie;
     }
 
     public void deleteAllMovies() {

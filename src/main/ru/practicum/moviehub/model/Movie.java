@@ -3,10 +3,9 @@ package ru.practicum.moviehub.model;
 import java.util.Objects;
 
 public class Movie {
-    private static int id;
+    private int id;
     private String title;
     private int year;
-
 
     public Movie(int id, String title, int year) {
         this.id = id;
@@ -15,13 +14,13 @@ public class Movie {
     }
 
     public Movie(String title, int year) {
-        this(0, title, year);
+        this.title = title;
+        this.year = year;
     }
 
-    public static void setId(int id) {
-        Movie.id = id;
+    public void setId(int id) {
+        this.id = id;
     }
-
 
     public int getId() {
         return id;

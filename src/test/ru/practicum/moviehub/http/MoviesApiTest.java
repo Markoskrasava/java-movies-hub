@@ -133,7 +133,7 @@ public class MoviesApiTest {
 
     @Test
     void deleteMovieById_shouldReturn204() throws Exception {
-        Movie newMovie = new Movie("Бойцовский клуб", 1999);
+        Movie newMovie = new Movie(1, "Бойцовский клуб", 1999);
         String json = gson.toJson(newMovie);
 
         HttpRequest postReq = HttpRequest.newBuilder()
